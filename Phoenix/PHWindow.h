@@ -31,6 +31,7 @@
 - (CGRect) frame;
 - (CGPoint) topLeft;
 - (CGSize) size;
+- (NSUInteger) hash;
 
 - (void) setFrame:(CGRect)frame;
 - (void) setTopLeft:(CGPoint)thePoint;
