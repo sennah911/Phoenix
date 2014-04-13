@@ -17,6 +17,7 @@
 @interface PHCommandWindowController : NSWindowController
 
 @property (weak) id<PHCommandWindowDelegate> delegate;
+@property (weak) IBOutlet NSTextField *textField;
 
 @end
 

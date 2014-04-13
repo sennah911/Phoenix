@@ -29,6 +29,7 @@
     
     [self.window setFrame:CGRectMake(0, 0, screen.frame.size.width, self.window.frame.size.height) display:NO];
     [self.window makeKeyAndOrderFront:nil];
+    [self.window makeFirstResponder:self.textField];
 }
 
 - (id)initWithWindow:(NSWindow *)window
