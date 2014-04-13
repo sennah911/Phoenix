@@ -12,6 +12,7 @@
 
 #import "PHHotKey.h"
 #import "PHAlerts.h"
+#import "PHCommandWindowController.h"
 #import "PHPathWatcher.h"
 
 #import "PHMousePosition.h"
@@ -20,10 +21,12 @@
 #import "PHApp.h"
 #import "NSScreen+PHExtension.h"
 
-@interface PHConfigLoader ()
+@interface PHConfigLoader () <PHCommandWindowDelegate>
 
 @property NSMutableArray* hotkeys;
 @property PHPathWatcher* watcher;
+@property PHCommandWindowController *commandWindowController;
+@property JSContext* ctx;
 
 @end
 
@@ -58,19 +61,24 @@ static NSString* PHConfigPath = @"~/.phoenix.js";
     [self.hotkeys makeObjectsPerformSelector:@selector(disable)];
     self.hotkeys = [NSMutableArray array];
     
-    JSContext* ctx = [[JSContext alloc] initWithVirtualMachine:[[JSVirtualMachine alloc] init]];
+    self.ctx = [[JSContext alloc] initWithVirtualMachine:[[JSVirtualMachine alloc] init]];
     
-    ctx.exceptionHandler = ^(JSContext* ctx, JSValue* val) {
+    self.ctx.exceptionHandler = ^(JSContext* ctx, JSValue* val) {
         [[PHAlerts sharedAlerts] show:[NSString stringWithFormat:@"[js exception] %@", val] duration:3.0];
     };
     
     NSURL* _jsURL = [[NSBundle mainBundle] URLForResource:@"underscore-min" withExtension:@"js"];
     NSString* _js = [NSString stringWithContentsOfURL:_jsURL encoding:NSUTF8StringEncoding error:NULL];
-    [ctx evaluateScript:_js];
-    [self setupAPI:ctx];
+    [self.ctx evaluateScript:_js];
+    [self setupAPI:self.ctx];
     
-    [ctx evaluateScript:config];
+    [self.ctx evaluateScript:config];
     [[PHAlerts sharedAlerts] show:@"Phoenix Config Loaded" duration:1.0];
+}
+
+- (void)commandStringSent:(NSString *)string {
+    NSLog(@"%@", string);
+    [self.ctx evaluateScript:string];
 }
 
 - (void) setupAPI:(JSContext*)ctx {
@@ -91,6 +99,11 @@ static NSString* PHConfigPath = @"~/.phoenix.js";
         
         [[PHAlerts sharedAlerts] show:str duration:duration];
     };
+    
+    api[@"positionedAlert"] = ^(NSString* str, CGFloat duration, CGFloat x, CGFloat y) {
+        [[PHAlerts sharedAlerts] show:str duration:duration centerPoint:CGPointMake(x, y)];
+    };
+
     
     api[@"bind"] = ^(NSString* key, NSArray* mods, JSValue* handler) {
         PHHotKey* hotkey = [PHHotKey withKey:key mods:mods handler:^BOOL{
@@ -125,6 +138,44 @@ static NSString* PHConfigPath = @"~/.phoenix.js";
             cblue[i] = [[blue objectAtIndex:i] floatValue];
         }
         CGSetDisplayTransferByTable(CGMainDisplayID(), (int)sizeof(cred) / sizeof(cred[0]), cred, cgreen, cblue);
+    };
+    
+    api[@"showCommandLine"] = ^ (BOOL show){
+        if (!self.commandWindowController) {
+            self.commandWindowController = [[PHCommandWindowController alloc] initWithWindowNibName:@"PHCommandWindowController"];
+        }
+        if (show) {
+            self.commandWindowController.delegate = self;
+            [self.commandWindowController showWindow:self.commandWindowController];
+        } else {
+            [self.commandWindowController close];
+        }
+    };
+    
+    api[@"overlay"] = ^(BOOL show, NSString *imagePath) {
+        if (show) {
+            NSImage *image = [[NSImage alloc] initWithContentsOfFile:imagePath];
+            
+            int windowLevel = CGShieldingWindowLevel();
+            NSRect windowRect = [[NSScreen mainScreen] frameIncludingDockAndMenu];
+            [image setSize:NSSizeFromCGSize(CGSizeMake(windowRect.size.width, windowRect.size.height - 20))];
+
+            self.overlayWindow = [[NSWindow alloc] initWithContentRect:windowRect
+                                                              styleMask:NSBorderlessWindowMask
+                                                                backing:NSBackingStoreBuffered
+                                                                  defer:NO
+                                                                 screen:[NSScreen mainScreen]];
+        
+            [self.overlayWindow setReleasedWhenClosed:YES];
+            [self.overlayWindow setLevel:windowLevel];
+            [self.overlayWindow setBackgroundColor:[NSColor colorWithPatternImage:image]];
+
+            [self.overlayWindow setOpaque:NO];
+            [self.overlayWindow setIgnoresMouseEvents:YES];
+            [self.overlayWindow makeKeyAndOrderFront:nil];
+        } else {
+            [self.overlayWindow orderOut:nil];
+        }
     };
 
     

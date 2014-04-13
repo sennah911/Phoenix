@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		206FCE9C18FADE600093E0DE /* PHCommandWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 206FCE9A18FADE600093E0DE /* PHCommandWindowController.m */; };
+		206FCE9D18FADE600093E0DE /* PHCommandWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 206FCE9B18FADE600093E0DE /* PHCommandWindowController.xib */; };
 		941AABFE184BFE0A00E19E33 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 941AABFD184BFE0A00E19E33 /* Carbon.framework */; };
 		941AAC04184C100600E19E33 /* PHHotKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 941AAC03184C100600E19E33 /* PHHotKey.m */; };
 		9451791118E0DA2B00FB2B4B /* PHMousePosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 9451791018E0DA2B00FB2B4B /* PHMousePosition.m */; };
@@ -33,6 +35,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		206FCE9918FADE600093E0DE /* PHCommandWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHCommandWindowController.h; sourceTree = "<group>"; };
+		206FCE9A18FADE600093E0DE /* PHCommandWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHCommandWindowController.m; sourceTree = "<group>"; };
+		206FCE9B18FADE600093E0DE /* PHCommandWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PHCommandWindowController.xib; sourceTree = "<group>"; };
 		941AABFD184BFE0A00E19E33 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		941AAC02184C100600E19E33 /* PHHotKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHHotKey.h; sourceTree = "<group>"; };
 		941AAC03184C100600E19E33 /* PHHotKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHHotKey.m; sourceTree = "<group>"; };
@@ -90,6 +95,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		206FCE9618FADCC30093E0DE /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				206FCE9918FADE600093E0DE /* PHCommandWindowController.h */,
+				206FCE9A18FADE600093E0DE /* PHCommandWindowController.m */,
+				206FCE9B18FADE600093E0DE /* PHCommandWindowController.xib */,
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
 		949D56D7184CF5E3008E92DE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -185,6 +200,7 @@
 		94CF94D5184C546300E63DE0 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				206FCE9618FADCC30093E0DE /* New Group */,
 				949D56E2184D0176008E92DE /* Alerts */,
 				94CF94BC184C22C500E63DE0 /* underscore-min.js */,
 				94CF94CB184C509100E63DE0 /* statusitem.png */,
@@ -256,6 +272,7 @@
 			files = (
 				949D56E1184D016E008E92DE /* AlertWindow.xib in Resources */,
 				94CF94CD184C509100E63DE0 /* statusitem.png in Resources */,
+				206FCE9D18FADE600093E0DE /* PHCommandWindowController.xib in Resources */,
 				94C602381849D3B9005E7DB3 /* InfoPlist.strings in Resources */,
 				94C602461849D3B9005E7DB3 /* Images.xcassets in Resources */,
 				94C6023E1849D3B9005E7DB3 /* Credits.rtf in Resources */,
@@ -277,6 +294,7 @@
 				9451791118E0DA2B00FB2B4B /* PHMousePosition.m in Sources */,
 				949D56E5184D0B30008E92DE /* PHPathWatcher.m in Sources */,
 				94CF94C7184C45FA00E63DE0 /* PHWindow.m in Sources */,
+				206FCE9C18FADE600093E0DE /* PHCommandWindowController.m in Sources */,
 				94CF94C6184C45FA00E63DE0 /* PHApp.m in Sources */,
 				94CF94CA184C4E7D00E63DE0 /* PHUniversalAccessHelper.m in Sources */,
 				94C6023A1849D3B9005E7DB3 /* main.m in Sources */,

@@ -24,6 +24,7 @@
 @interface PHAlertWindowController : NSWindowController
 
 - (void) show:(NSString*)oneLineMsg duration:(CGFloat)duration pushDownBy:(CGFloat)adjustment;
+- (void) show:(NSString*)oneLineMsg duration:(CGFloat)duration centerPoint:(CGPoint)center;
 
 @property (weak) id<PHAlertHoraMortisNostraeDelegate> delegate;
 
@@ -80,6 +81,19 @@
     [self.visibleAlerts addObject:alert];
 }
 
+- (void) show:(NSString*)oneLineMsg duration:(CGFloat)duration centerPoint:(CGPoint)centerPoint {
+    NSScreen* currentScreen = [NSScreen mainScreen];
+    
+    CGRect screenRect = [currentScreen frame];
+    
+    //Invert y
+    centerPoint.y = screenRect.size.height - centerPoint.y;
+    
+    PHAlertWindowController* alert = [[PHAlertWindowController alloc] init];
+    alert.delegate = self;
+    [alert show:oneLineMsg duration:duration centerPoint:centerPoint];
+}
+
 - (void) oraPro:(id)nobis {
     [self.visibleAlerts removeObject:nobis];
 }
@@ -131,6 +145,31 @@
     [self performSelector:@selector(fadeWindowOut) withObject:nil afterDelay:duration];
     
     NSEnableScreenUpdates();
+}
+
+- (void) show:(NSString*)oneLineMsg duration:(CGFloat)duration centerPoint:(CGPoint)center {
+    NSDisableScreenUpdates();
+    
+    [NSAnimationContext beginGrouping];
+    [[NSAnimationContext currentContext] setDuration:0.01];
+    [[[self window] animator] setAlphaValue:1.0];
+    [NSAnimationContext endGrouping];
+    
+    [self useTitleAndResize:[oneLineMsg description]];
+    [self setFrameWithCenterPoint:center];
+    [self showWindow:self];
+    [self performSelector:@selector(fadeWindowOut) withObject:nil afterDelay:duration];
+    
+    NSEnableScreenUpdates();
+}
+
+- (void)setFrameWithCenterPoint:(CGPoint)center {
+    CGRect winRect = [[self window] frame];
+    
+    winRect.origin.x = center.x - (winRect.size.width / 2.0);
+    winRect.origin.y = center.y - winRect.size.height;
+    
+    [self.window setFrame:winRect display:NO];
 }
 
 - (void) setFrameWithAdjustment:(CGFloat)pushDownBy {

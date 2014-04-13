@@ -12,4 +12,6 @@
 
 - (void) reload;
 
+@property NSWindow* overlayWindow;
+
 @end
